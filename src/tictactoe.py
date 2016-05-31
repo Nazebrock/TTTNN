@@ -9,11 +9,11 @@ class Player:
     def getPos(self):
         coordinate = raw_input("Enter coordinate (x y): ")
         coordinate = coordinate.split(' ', 1)
-	while(len(coordinate) != 2):
-	    print("Wrong coordinate format (x y): ")
-	    coordinate = input()
-	    coordinate = coordinate.split(' ')
-	return [int(c) for c in coordinate]
+        while len(coordinate) != 2 :
+            print("Wrong coordinate format (x y): ")
+            coordinate = input()
+            coordinate = coordinate.split(' ')
+        return [int(c) for c in coordinate]
 
 """ Class for MiniMax IA """
 class IA:
@@ -31,7 +31,7 @@ class IA:
         if x < 3:
             return [0,x]
         else:
-            return [(x/3), (x%3)]
+            return [(x//3), (x%3)]
 
     def score(self, game, depth):
         if game.testWin() == self.me:
@@ -42,20 +42,17 @@ class IA:
             return 0 
 
     def minimax(self, game, depth):
-        if game.testWin() != 0:
+        if game.testWin() != 0 or depth == 9 - game.turn:
             return self.score(game, depth)
 
         depth += 1
         scores = []
         moves = []
-        print("Moves :"+str(game.getMoves()))
         for move in game.getMoves():
-            print(self.convertPos(move))
             possible_game = game.getNewState(self.convertPos(move))
             scores.append(self.minimax(possible_game, depth))
             moves.append(move)
         
-        print(str(scores)+" : "+str(moves))
         if (game.turn%2)+1 == self.me:
             max_index = scores.index(max(scores))
             self.choice = moves[max_index]
@@ -85,6 +82,7 @@ class Tictactoe:
     def getNewState(self, pos):
         t = deepcopy(self) 
         t.play((self.turn%2)+1, pos)
+        t.turn += 1
         return t
 
     """ Return a list of the possible moves """
@@ -143,20 +141,20 @@ class Tictactoe:
     """ Run the game """
     def run(self, players=[Player(), Player()]):
 
-	while(self.winner == 0 and self.turn < 9):
-	    print("Player "+str((self.turn%2)+1)+" turn")
-	    self.draw()
-	    coordinate = players[self.turn%2].getPos()
-	    while(self.play((self.turn%2)+1, coordinate) == -1):
+        while(self.winner == 0 and self.turn < 9):
+            print("Player "+str((self.turn%2)+1)+" turn")
+            self.draw()
+            coordinate = players[self.turn%2].getPos()
+            while(self.play((self.turn%2)+1, coordinate) == -1):
                 print("Wrong coordinate : "+str(coordinate))
-		coordinate = players[self.turn%2].getPos()
-	    self.turn += 1
-	    self.winner = self.testWin()
+                coordinate = players[self.turn%2].getPos()
+            self.turn += 1
+            self.winner = self.testWin()
 
-	if self.winner != 0:
-	    print("Player "+str(self.winner)+" win !")
-	    self.draw()
-	else:
-	    print("Draw")
-	    self.draw()
+        if self.winner != 0:
+            print("Player "+str(self.winner)+" win !")
+            self.draw()
+        else:
+            print("Draw")
+            self.draw()
 
