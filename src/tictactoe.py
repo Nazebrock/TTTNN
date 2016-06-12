@@ -42,9 +42,9 @@ class IA:
             return 0 
 
     def minimax(self, game, depth):
-        if game.testWin() != 0 or depth == 9 - game.turn:
+        if game.testWin() != 0 or game.turn == 9:
             return self.score(game, depth)
-
+	
         depth += 1
         scores = []
         moves = []
